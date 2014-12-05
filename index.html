@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compose</title>
+<link href="css/style.css" rel="stylesheet">
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script type="text/javascript" src="javascript/util.js"></script>
+<script type="text/javascript">
+	var token = 'hello world!';
+	var user_id = '';
+
+ 	function handleKeyPress(e, form, global) {
+		var key = e.keyCode || e.which;
+		if (key == 13) {
+
+			var currentIdmIp = encodeURIComponent(document
+					.getElementById("idmIp").value);
+			var currentIdmPort = encodeURIComponent(document
+					.getElementById("idmPort").value);
+			var currentUaaIp = encodeURIComponent(document
+					.getElementById("uaaIp").value);
+			var currentUaaPort = encodeURIComponent(document
+					.getElementById("uaaPort").value);
+
+			alert("changed");
+		}
+	}
+
+	function setValue() {
+		document.getElementById("idmIp").value = idmIp;
+		document.getElementById("idmPort").value = idmPort;
+		document.getElementById("uaaIp").value = uaaIp;
+		document.getElementById("uaaPort").value = uaaPort;
+		document.getElementById("servioticyIp").value = servioticyIp;
+		document.getElementById("servioticyPort").value = servioticyPort;
+	}
+
+	function autoResize(id) {
+		var newheight;
+
+		if (document.getElementById) {
+			newheight = document.getElementById(id).contentWindow.document.body.scrollHeight;
+		}
+
+		document.getElementById(id).height = (newheight) + "px";
+	}
+	//we do this first to make sure that we are authenticated... and then everything works ;-)
+/*	alert('a');
+	$.ajax({
+	  url: idmIp+":"+idmPort+"/idm/serviceobject/api_token_data/so1meid2",
+	  context: document.body
+	}).done(function() {
+	  alert('Authenticated successfully');
+	});*/
+
+</script>
+</head>
+<body onload="setValue()">
+
+	<div id="container">
+		<div id="header">
+			<form method="get" action="">
+				<table align="right" style="font-size: 13px">
+					<tr>
+						<td>Idm Ip:<input type="text" id="idmIp" name="idmIp"
+							onkeypress="handleKeyPress(event,this.form)" /></td>
+					</tr>
+					<tr>
+						<td>Idm Port:<input type="text" id="idmPort" name="idmPort"
+							onkeypress="handleKeyPress(event,this.form)"></td>
+					</tr>
+					<tr>
+						<td>Servioticy Ip:<input type="text" id="servioticyIp"
+							name="servioticyIp" onkeypress="handleKeyPress(event,this.form)"></td>
+					</tr>
+					<tr>
+						<td>Servioticy Port:<input type="text" id="servioticyPort"
+							name="servioticyPort"
+							onkeypress="handleKeyPress(event,this.form)"></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+
+		<nav>
+			<ul>
+				<li id="navIdmLi"><a id="navIdmA" href="idm/createUser.html"
+					target="content">Idm</a>
+					<ul>
+						<li><a href="idm/createUser.html" target="content">User</a>
+							<ul>
+								<li><a href="idm/createUser.html" target="content">Create</a></li>
+								<li><a href="idm/authenticateUser.html" target="content">Authenticate</a></li>
+								<li><a href="idm/userData.html" target="content">Information</a></li>
+								<!--li><a href="idm/deleteUser.html" target="content">Delete</a></li-->
+							</ul></li>
+					        <li><a href="idm/listServices.html" target="content">Services</a>
+							<ul>
+ 								<li><a href="idm/listServices.html" target="content">Instances</a></li>
+								<li><a href="idm/listServiceSources.html" target="content">Sources</a></li>
+
+							</ul></li>
+						<li><a href="idm/listGroups.html" target="content">Group</a>
+							<ul>
+								<li><a href="idm/listGroups.html" target="content">List</a></li>
+								<li><a href="idm/createGroup.html" target="content">Create</a></li>
+								<li><a href="idm/groupData.html" target="content">Information</a></li>
+							</ul></li>
+
+						<li><a href="idm/addGroupMembership.html" target="content">Group
+								Membership</a>
+							<ul>
+								<li><a href="idm/addGroupMembership.html" target="content">Add</a></li>
+								<li><a href="idm/pendingGroupMembership.html"
+									target="content">Pending</a></li>
+								<li><a href="idm/approveGroupMembership.html"
+									target="content">Approve</a></li>
+							</ul></li>
+
+						<!--li><a href="idm/addUserMembership.html" target="content">User
+								Membership</a>
+							<ul>
+								<li><a href="idm/addUserMembership.html" target="content">Add</a></li>
+								<li><a href="idm/pendingUserMembership.html"
+									target="content">Pending</a></li>
+								<li><a href="idm/approveUserMembership.html"
+									target="content">Approve</a></li>
+							</ul></li-->
+
+					</ul></li>
+
+				<li id="navSoLi"><a id="navSoA"
+					href="servioticy/ServiceObjectRegistry.html" target="content">ServioTiCy</a>
+					<ul>
+						<li><a href="servioticy/ServiceObjectRegistry.html" target="content">Create Service
+								Object</a></li>
+					</ul></li>
+
+			</ul>
+		</nav>
+
+	</div>
+	<div id="content" align="center">
+		<iframe name="content" src="idm/authenticateUser.html" width="100%"
+			height="400px" id="iframeContent" marginheight="0" frameborder="0"
+			scrolling="no" onLoad="autoResize('iframeContent');"></iframe>
+	</div>
+
+</body>
+</html>

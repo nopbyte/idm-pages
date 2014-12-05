@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compose</title>
+<link href="../css/style.css" rel="stylesheet">
+<script type="text/javascript"
+	src="../javascript/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/util.js"></script>
+<script type="text/javascript">
+  
+  function custom_table(json) {
+	var table = $('<table></table>');
+	table.append('<tr><td><b>Group id</b></td><td><b>role</b></td></tr>');
+	for(var i =0; i<json.length; i++)
+        {
+
+	      var row = '<tr><td>'+json[i].group_id+'</td><td>'+json[i].role+'</td></tr>';
+	      table.append(row);
+        }
+	return table;
+   }
+
+    function listServices() {
+
+        //name and passsword in order to create user 
+        var token = encodeURIComponent(parent.token);
+        
+        var resultDiv = $("#resultDivContainer");
+	$.ajax({
+            url: idmIp + ':' + idmPort + '/idm/user/info/',
+            type: 'GET',
+            contentType: "application/json;charset=UTF-8",
+            dataType: 'json',
+            crossDomain: true,
+            async:false,
+            headers: {'Authorization': 'Bearer ' + token},
+
+            success: function (result) {
+		result = result.approvedMemberships;
+                var table = custom_table(result);
+                $('#resultDivContainer').empty();
+                $('#resultDivContainer').append(table);
+            },
+
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+
+       
+    };
+    $( document ).ready(function() {
+	listServices();
+    });
+    
+</script>
+</head>
+<body onload="listServices();">
+
+	<h2 align="center" style="color: DarkBlue;">List services</h2>
+	<div id="resultDivContainer" align="center"></div>
+	<form method="get" action="">
+		        
+		<table align="center">
+
+
+			<tr>
+				<td><br>&nbsp;</td>
+				<td><a class="idmButton" onclick="listServices()">Get</a>
+					                </td>
+			</tr>
+
+		</table>
+		    
+	</form>
+
+	
+</body>
+</html>

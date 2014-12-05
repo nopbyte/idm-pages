@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compose</title>
+<link href="../css/style.css" rel="stylesheet">
+<script type="text/javascript"
+	src="../javascript/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/util.js"></script>
+<script type="text/javascript">
+   
+    function getUser() {
+
+        //id and token from user input 
+        var token = encodeURIComponent(parent.token);
+        
+        var resultDiv = $("#resultDivContainer");
+
+        $.ajax({
+            url: idmIp + ':' + idmPort + '/idm/user/info/',
+            type: 'GET',
+            contentType: "application/json;charset=UTF-8",
+            dataType: 'json',
+            crossDomain: true,
+            async:false,
+            headers: {'Authorization': 'Bearer ' + token},
+
+            success: function (result) {
+		parent.user_id = result.id;
+                var table = display_json(result);
+                $('#resultDivContainer').empty();
+                $('#resultDivContainer').append(table);
+            },
+
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+    };
+    $( document ).ready(function() {
+	getUser();
+    });
+    
+
+</script>
+</head>
+<body>
+	<h2 align="center" style="color: DarkBlue;">User Information</h2>
+	<div id="resultDivContainer" align="center"></div>
+	<form method="get" action="">
+		        
+		<table align="center">
+
+
+			<tr>
+				<td><br>&nbsp;</td>
+				<td><a class="idmButton" onclick="getUser()">Get</a>
+					                </td>
+			</tr>
+
+		</table>
+		    
+	</form>
+
+	
+</body>
+</html>

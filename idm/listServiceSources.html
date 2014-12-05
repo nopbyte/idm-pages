@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compose</title>
+<link href="../css/style.css" rel="stylesheet">
+<script type="text/javascript"
+	src="../javascript/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/util.js"></script>
+<script type="text/javascript">
+  
+  var groups = ""
+  function showGroups(g)
+  {
+	//alert(JSON.stringify(groups[g]));
+	var table = $('<table></table>');
+	table.append('<tr><td><b>Group id</b></td></tr>');
+	var json = groups[g].groups;
+	for(var i =0; i<json.length; i++)
+        {
+              //alert(JSON.stringify(json[i]));
+	      var row = '<tr><td>'+json[i].group_id+'</td>></tr>';
+	      table.append(row);
+        }
+	
+	$('#groupsContainer').empty();
+        $('#groupsContainer').append(table);
+	
+  }
+
+  function custom_table(json) {
+	json=json.entities;
+	var table = $('<table></table>');
+	table.append('<tr><td><b>Id</b></td><td><b>name</b></td><td><b>last modification</b></td><td><b>owner</b></td></tr>');
+	groups = json;
+	for(var i =0; i<json.length; i++)
+        {
+              //alert(JSON.stringify(json[i]));
+	      var row = '<tr><td>'+json[i].id+'</td><td>'+json[i].name+'</td><td>'+json[i].lastModified+'</td><td>'+json[i].owner_id+'</td><td><a href="javascript:showGroups('+i+');">groups</a></td></tr>';
+	      table.append(row);
+        }
+	return table;
+   }
+
+    function listServices() {
+
+        //name and passsword in order to create user 
+        var token = encodeURIComponent(parent.token);
+        
+        var resultDiv = $("#resultDivContainer");
+	
+        $.ajax({
+            url: idmIp + ':' + idmPort + '/idm/user/'+parent.user_id+'/servicesourcecode/',
+            type: 'GET',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            crossDomain: true,
+            async:false,
+            headers: {'Authorization': 'Bearer ' + token},
+
+            success: function (result) {
+
+		var table = display_json(result);
+                table = custom_table(result);
+                $('#resultDivContainer').empty();
+                $('#resultDivContainer').append(table);
+            },
+
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+    };
+    $( document ).ready(function() {
+	listServices();
+    });
+    
+</script>
+</head>
+<body onload="listServices();">
+
+	<h2 align="center" style="color: DarkBlue;">List service sources</h2>
+	<div id="resultDivContainer" align="center"></div>
+	<div id="groupsContainer" align="center"></div>
+	<form method="get" action="">
+		        
+		<table align="center">
+
+
+			<tr>
+				<td><br>&nbsp;</td>
+				<td><a class="idmButton" onclick="listServices()">Get</a>
+					                </td>
+			</tr>
+
+		</table>
+		    
+	</form>
+
+	
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compose</title>
+<link href="../css/style.css" rel="stylesheet">
+<script type="text/javascript"
+	src="../javascript/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/util.js"></script>
+<script type="text/javascript">
+  
+    function pendingGroupMembership() {
+
+        //name and passsword in order to create user 
+        var token = encodeURIComponent(parent.token);
+        
+        var resultDiv = $("#resultDivContainer");
+
+        $.ajax({
+            url: idmIp + ':' + idmPort + '/idm/group_memberships/',
+            type: 'GET',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            crossDomain: true,
+            async:false,
+            headers: {'Authorization': 'Bearer ' + token},
+
+            success: function (result) {
+                var table = display_json(result);
+                $('#resultDivContainer').empty();
+                $('#resultDivContainer').append(table);
+            },
+
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+    };
+	
+        $( document ).ready(function() {
+	pendingGroupMembership();
+    });
+</script>
+</head>
+<body>
+
+	<h2 align="center" style="color: DarkBlue;">Pending Group
+		Memberships</h2>
+
+	<div id="resultDivContainer" align="center"></div>	
+	<form method="get" action="">
+		        
+		<table align="center">
+
+
+			<tr>
+				<td><br>&nbsp;</td>
+				<td><a class="idmButton" onclick="pendingGroupMembership()">Get</a>
+					                </td>
+			</tr>
+
+		</table>
+		    
+	</form>
+
+	
+</body>
+</html>

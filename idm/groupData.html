@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compose</title>
+<link href="../css/style.css" rel="stylesheet">
+<script type="text/javascript"
+	src="../javascript/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/util.js"></script>
+<script type="text/javascript">
+    
+    function getGroup() {
+
+        //id and token from user input 
+        var id = encodeURIComponent(document.getElementById("id").value);
+        var token = encodeURIComponent(parent.token);
+        
+        var resultDiv = $("#resultDivContainer");
+
+        $.ajax({
+            url: idmIp + ':' + idmPort + '/idm/group/' + id,
+            type: 'GET',
+            contentType: "application/json;charset=UTF-8",
+            dataType: 'json',
+            crossDomain: true,
+            async:false,
+            headers: {'Authorization': 'Bearer ' + token},
+
+            success: function (result) {
+                var table = display_json(result);
+                $('#resultDivContainer').empty();
+                $('#resultDivContainer').append(table);
+            },
+
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+    };
+</script>
+</head>
+<body>
+
+	<h2 align="center" style="color: DarkBlue;">Group Information</h2>
+
+	<form method="get" action="">
+		        
+		<table align="center">
+
+			<tr>
+				<td>Group Id:</td>
+				<td><input type="text" id="id" name="id" /></td>
+
+			</tr>
+
+
+			<tr>
+				<td><br>&nbsp;</td>
+				<td><a class="idmButton" onclick="getGroup()">Get</a>
+					                </td>
+			</tr>
+
+		</table>
+		    
+	</form>
+
+	<div id="resultDivContainer" align="center"></div>
+</body>
+</html>

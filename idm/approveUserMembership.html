@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compose</title>
+<link href="../css/style.css" rel="stylesheet">
+<script type="text/javascript"
+	src="../javascript/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/util.js"></script>
+<script type="text/javascript">
+    
+    function approveUserMembership() {
+
+        //name and passsword in order to create user 
+        var token = encodeURIComponent(parent.token);
+        var unmodified = encodeURIComponent(document
+            .getElementById("unmodified").value);
+        var id = encodeURIComponent(document.getElementById("id").value);
+        
+        var resultDiv = $("#resultDivContainer");
+
+        $.ajax({
+            url: idmIp + ':' + idmPort + '/idm/memberships/approve/' + id + '/',
+            type: 'PUT',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            crossDomain: true,
+            async:false,
+            headers : {
+                'Authorization' : 'Bearer ' + token,
+                'If-Unmodified-Since' : unmodified
+            },
+
+            success: function (result) {
+                var table = display_json(result);
+                $('#resultDivContainer').empty();
+                $('#resultDivContainer').append(table);
+            },
+
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+    };
+</script>
+</head>
+<body>
+
+	<h2 align="center" style="color: DarkBlue;">Approve User
+		Membership</h2>
+
+	<form method="get" action="">
+		        
+		<table align="center">
+
+			<tr>
+				<td>Id:</td>
+				<td><input type="text" id="id" name="id" /></td>
+			</tr>
+
+			<tr>
+				<td>Unmodified:</td>
+				<td><input type="text" id="unmodified" name="unmodified" />
+					                </td>
+			</tr>
+
+			<tr>
+				<td><br>&nbsp;</td>
+				<td><a class="idmButton" onclick="approveUserMembership()">Approve</a>
+					                </td>
+			</tr>
+
+		</table>
+		    
+	</form>
+
+	<div id="resultDivContainer" align="center"></div>
+</body>
+</html>
