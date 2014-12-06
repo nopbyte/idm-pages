@@ -36,6 +36,10 @@
             }
         });
     };
+    $( document ).ready(function() {
+	pendingUserMembership();
+    });
+    
 </script>
 </head>
 <body>
@@ -43,21 +47,8 @@
 	<h2 align="center" style="color: DarkBlue;">Pending User
 		Memberships</h2>
 
-	<form method="get" action="">
-		        
-		<table align="center">
-
-
-			<tr>
-				<td><br>&nbsp;</td>
-				<td><a class="idmButton" onclick="pendingUserMembership()">Get</a>
-					                </td>
-			</tr>
-
-		</table>
-		    
-	</form>
-
 	<div id="resultDivContainer" align="center"></div>
+	
+
 </body>
 </html>
