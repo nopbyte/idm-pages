@@ -11,16 +11,42 @@
   
   function custom_table(json) {
 	var table = $('<table></table>');
-	table.append('<tr><td><b>Group id</b></td><td><b>role</b></td></tr>');
+	var token = parent.token;
+	table.append('<tr><td><b>Name</b></td><td><b>Group id</b></td><td><b>role</b></td></tr>');
 	for(var i =0; i<json.length; i++)
         {
-
-	      var row = '<tr><td>'+json[i].group_id+'</td><td>'+json[i].role+'</td></tr>';
-	      table.append(row);
+	      // now get the name of the group...
+	      $.ajax({
+	            url: idmIp + ':' + idmPort + '/idm/group/'+json[i].group_id,
+	            type: 'GET',
+	            contentType: "application/json;charset=UTF-8",
+	            dataType: 'json',
+	            crossDomain: true,
+	            async:false,
+	            headers: {'Authorization': 'Bearer ' + token},
+	
+	            success: function (result) {
+		 	
+			var row = '<tr><td>'+result.name+'</td><td>'+json[i].group_id+'</td><td>'+json[i].role+'</td></tr>';
+			table.append(row);
+	            },
+	
+	            error: function (xhr, ajaxOptions, thrownError) {
+	                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+	            }
+	        });
+	      
+              
+	      
         }
 	return table;
    }
 
+   function getGroupName(group_id){
+     		
+	
+		
+   }
     function listServices() {
 
         //name and passsword in order to create user 
