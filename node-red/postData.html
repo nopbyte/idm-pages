@@ -9,22 +9,22 @@
 <script type="text/javascript" src="../javascript/util.js"></script>
 <script type="text/javascript">
     
-    function createServiceObject() {
+    function putData() {
 //	alert('trying token:'+parent.token);
         var token = encodeURIComponent(parent.token);
-        var soJson = document.getElementById("so").value;
-
-        
+       
+        var url = document.getElementById("url").value;
+	var message = document.getElementById("message").value;
         var resultDiv = $("#resultDivContainer");
 
         $.ajax({
-        	url: 'http://localhost:8080/',
+        	url: '/post_data/',
             type: 'POST',
-            data: soJson,
-            contentType: 'application/json;',
+            contentType: "application/json; charset=utf-8",
             dataType: 'json',
             crossDomain: true, 
             async:false,
+	    data: JSON.stringify({"url": url, "message": message}),
             headers: {'Authorization': token},
 
             success: function (result) {
@@ -44,7 +44,7 @@
 </head>
 <body>
 
-	<h2 align="center" style="color: Purple;">Create Service Object</h2>
+	<h2 align="center" style="color: Purple;">Send Data</h2>
 
 	<form method="get" action="">
 		        
@@ -52,13 +52,19 @@
 
 
 			<tr>
-				<td>Service Object:</td>
-				<td><textarea rows="20" cols="80" id="so" name="so" ></textarea></td>
+				<td>url</td>
+				<td><input type="text" id="url" name="url" value="http://localhost:1880/my_input_node/" />
+					                </td>
+			</tr>
+
+			<tr>
+				<td>Message:</td>
+				<td><textarea rows="10" cols="80" id="message" name="message" ></textarea></td>
 			</tr>
 
 			<tr>
 				<td><br>&nbsp;</td>
-				<td><a class="soButton" onclick="createServiceObject()">Create</a>
+				<td><a class="soButton" onclick="putData()">Send Data</a>
 					                </td>
 			</tr>
 
