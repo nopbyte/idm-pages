@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compose</title>
+<link href="../css/style.css" rel="stylesheet">
+<script type="text/javascript"
+	src="../javascript/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/util.js"></script>
+<script type="text/javascript">
+    
+    function createGroup() {
+
+	var e = document.getElementById("type");
+	var type = e.options[e.selectedIndex].value;
+        //groupname and token for authorization 
+        var id = document.getElementById("id").value;
+        var title = document.getElementById("title").value;
+        var review  = document.getElementById("review").value;
+
+	var e = document.getElementById("rating");
+	var rating = e.options[e.selectedIndex].value;
+
+        var token = encodeURIComponent(parent.token);
+	
+	var data = {
+		title:title,
+		text:review,
+		rating:rating
+	};
+
+	var uriPath = "/"+type+"/"+id+"/feedback/";
+
+        var resultDiv = $("#resultDivContainer");
+
+
+        $.ajax({
+            url: populariotyIp + ':' + populariotyPort + uriPath,
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            crossDomain: true,
+            async:false,
+            headers: {'Authorization': 'Bearer ' + token},
+
+            success: function (result) {
+                var table = display_json(result);
+                $('#resultDivContainer').empty();
+                $('#resultDivContainer').append(table);
+            },
+
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+    };
+</script>
+</head>
+<body>
+	<h2 align="center" style="color: DarkBlue;">Provide Feedback</h2>
+
+	<form method="get" action="">
+		        
+		<table align="center">
+			<tr>
+				<td>Entity Type:</td>
+				<td>
+				<select id="type">
+					  <option value="service_object">Service Object</option>
+					  <option value="service">COMPOSE Application</option>
+				</select>
+		                </td>
+			</tr>
+
+			<tr>
+				<td>Entity id:</td>
+				<td><input type="text" id="id" name="id" />
+					                </td>
+			</tr>
+			<tr>
+				<td>Title:</td>
+				<td><input type="text" id="title" name="title" />
+					                </td>
+			</tr>
+			<tr>
+				<td>Review:</td>
+				<td><input type="text" id="review" name="review" />
+					                </td>
+			</tr>
+
+			<tr>
+				<td>Rating:</td>
+				<td>
+				<select id="rating">
+					  <option value="1">1</option>
+					  <option value="2">2</option>
+					  <option value="3">3</option>
+					  <option value="4">4</option>
+					  <option value="5">5</option>
+					  <option value="6">6</option>
+					  <option value="7">7</option>
+					  <option value="8">8</option>
+					  <option value="9">9</option>
+					  <option value="10">10</option>
+				</select>
+		                </td>
+			</tr>
+
+			<tr>
+				<td><br>&nbsp;</td>
+				<td><a class="idmButton" onclick="createGroup()">Create</a></td>
+			</tr>
+
+		</table>
+		    
+	</form>
+
+	<div id="resultDivContainer" align="center"></div>
+</body>
+</html>
+

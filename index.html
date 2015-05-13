@@ -46,14 +46,6 @@
 
 		document.getElementById(id).height = (newheight) + "px";
 	}
-	//we do this first to make sure that we are authenticated... and then everything works ;-)
-/*	alert('a');
-	$.ajax({
-	  url: idmIp+":"+idmPort+"/idm/serviceobject/api_token_data/so1meid2",
-	  context: document.body
-	}).done(function() {
-	  alert('Authenticated successfully');
-	});*/
 
 </script>
 </head>
@@ -86,7 +78,7 @@
 
 		<nav>
 			<ul>
-				<li id="navIdmLi"><a id="navIdmA" href="idm/createUser.html"
+				<li id="navIdmLi"><a id="navIdmA" href="idm/authenticateUser.html"
 					target="content">Idm</a>
 					<ul>
 						<li><a href="idm/createUser.html" target="content">User</a>
@@ -137,6 +129,15 @@
 					<ul>
 						<li><a href="servioticy/ServiceObjectRegistry.html" target="content">Create Service
 								Object</a></li>
+					</ul></li>
+
+
+				<li id="navPopularioty"><a id="navPopularioty"
+					href="popularioty/sendFeedback.html" target="content">PopularioTy</a>
+					<ul>
+						<li><a href="popularioty/searchReputation.html" target="content">Final Reputation Search</a></li>
+						<li><a href="popularioty/levenshteinSearch.html" target="content">Levenshtein search Feedback</a></li>
+						<li><a href="popularioty/sendFeedback.html" target="content">Send Feedback</a></li>
 					</ul></li>
 
 			</ul>

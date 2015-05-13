@@ -1,7 +1,9 @@
-var idmIp = 'http://localhost';
+var idmIp = 'http://192.168.56.101';
 var idmPort = '8082';
 var uaaIp = 'http://192.168.56.101';
 var uaaPort = '8081';
+var populariotyIp = 'http://localhost';
+var populariotyPort = '9080';
 var servioticyIp = 'http://localhost';
 var servioticyPort = '8080';
 
