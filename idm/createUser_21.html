@@ -24,7 +24,7 @@
 	// create new digest request object
         var url = '/idm/user/';
 	alert('about to send post?');
-	var postReq = new digestAuthRequest('POST', url, 'component', 'ZXJpZHMiLCJ');
+	var postReq = new digestAuthRequest('POST', url, 'component', 'componentpassword');
 	alert('after post instruction');
 	postReq.request(function(result) { 
                 var table = display_json(result);
