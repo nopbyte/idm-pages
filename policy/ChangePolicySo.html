@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compose</title>
+<link href="../css/style.css" rel="stylesheet">
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/util.js"></script>
+<script type="text/javascript">
+//---------------------------------------------------------
+//  Generate policy  
+//---------------------------------------------------------
+    function genPolicy(soId, owner, flag, callback) {
+	var token = encodeURIComponent(parent.token);
+        var soJson = {"entityType": "so","entityId": soId,"ownerId": owner, "private" : flag};
+
+        var resultDiv = $("#resultDivContainer");
+
+        $.ajax({
+        	url: secServerIp + ":" + secServerPort + '/pip/generatePolicy',
+            type: 'POST',
+            data: JSON.stringify(soJson),
+	      //json: soJson,
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            crossDomain: true, 
+            async:false,
+            success: function (result) {
+		if (result != null){
+			callback(null, result);
+		} else { callback({"Error" : "No SO Policy"},null);}
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //resultDiv.html("Error: " + xhr.status + " " + thrownError);
+		   callback({"Error" : "No SO Policy"},null);
+            }
+        });
+    };
+    
+//---------------------------------------------------------
+//  Set policy   
+//---------------------------------------------------------
+       function setPolicySO(soId, policy, callback) {
+	 var token = encodeURIComponent(parent.token);
+        var soJson = {"authToken": token, "soId" : soId,"policy" :  policy.policy};
+        var resultDiv = $("#resultDivContainer");
+	
+        $.ajax({
+        	url: secServerIp + ":" + secServerPort + '/pip/so/updatePolicyServioticy',
+            type: 'POST',
+            data: JSON.stringify(soJson),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            crossDomain: true, 
+            async:false,
+            success: function (result) {
+		if (result != null){
+			callback(null, result);
+		} else { callback({"Error" : "Could not set policy"},null);}
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //resultDiv.html("Error: " + xhr.status + " " + thrownError);
+		   callback({"Error" : "Could not set policy"},null);
+            }
+        });
+    }; 
+    
+    
+    
+    
+    
+    	function getSO(callback) {
+	var token = encodeURIComponent(parent.token);
+        var resultDiv = $("#resultDivContainer");
+	
+        $.ajax({
+        	url: servioticyIp + ":" + servioticyPort,
+            type: 'GET',
+            crossDomain: true, 
+            async:false,
+		headers: {'Authorization':  token},
+            success: function (result) {
+		if (result != null){
+			callback(null, result);
+		} else { callback({"Error" : "No SO ID"},null);}
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+		   callback({"Error" : "No SO ID"},null);
+            }
+        });
+    };
+    
+	function getUserID(callback) {
+	var token = encodeURIComponent(parent.token);
+        var resultDiv = $("#resultDivContainer");
+
+$.ajax({
+        	url: idmIp + ":"  + idmPort + '/idm/user/info/',
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            crossDomain: true, 
+            async:false,
+		headers: {'Authorization':  "Bearer" +  token},
+            success: function (result) {
+		if (result.id != null){
+			callback(null, result.id);
+		}else {callback({"Error" : "No UserID"},null);}
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+		   callback({"Error" : "No UserID"},null);
+            }
+        });
+    };
+    
+    
+//---------------------------------------------------------
+//  Function to set your own SOs to ...    
+//---------------------------------------------------------
+// TODO replace SecServer pass
+    function setPolicy(flag){
+    	// Get user ID
+	getUserID(function(err, ownerId){
+		if (err != null){
+			alert("Could not get OwnerId");
+			return null;
+		}
+		var owner = ownerId;
+		// Get SOs
+		getSO(function(err, soList){
+			if (err != null){
+				alert("Could not get soList");
+				return null;
+			}
+			//alert("SO list: " + soList);
+			var listLength = soList.length;
+			for (var i = 0; i < listLength; i++){
+				// Generate Policy
+				var soId = soList[i];
+				genPolicy(soId,ownerId, flag, function(err, policy){
+					if (err != null){
+						alert("Could not get Policy");
+						return null;
+					}
+					// Set Policy
+					 setPolicySO(soId, policy, function(){
+						if (err != null){
+							alert("Could not get Policy");
+							return null;
+						}
+							alert("Done");						
+					 });
+				});
+			}
+		});
+	});
+    };
+    
+	function setPublic(){
+    
+    
+    };
+
+
+
+ 
+</script>
+</head>
+<body>
+
+	<h2 align="center" style="color: Purple;">Change policy of owned SO</h2>
+
+	<form method="get" action="">
+		<table align="center">
+
+
+			<tr>
+				<td><br>&nbsp;</td>
+				<td><a class="policyButton" onclick="setPolicy(true)">Deny other access</a>
+			</tr>
+
+			<tr>
+				<td><br>&nbsp;</td>
+				<td><a class="policyButton" onclick="setPolicy(false)">Allow other access</a>
+			</tr>
+
+		</table>
+	</form>
+
+	<div id="resultDivContainer" align="center" style="min-height: 200px"></div>
+</body>
+</html>
