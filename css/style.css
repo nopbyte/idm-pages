@@ -321,6 +321,40 @@ nav ul ul ul li a:hover {
     cursor: pointer;
 }
 
+/*Button*/
+.policyButton {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #bd07eb), color-stop(1, #7e3f9e) );
+    background:-moz-linear-gradient( center top, #bd07eb 5%, #7e3f9e 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bd07eb', endColorstr='#7e3f9e');
+    background-color:#bd07eb;
+    -webkit-border-top-left-radius: 0px;
+    -moz-border-radius-topleft: 0px;
+    border-top-left-radius: 0px;
+    -webkit-border-top-right-radius: 0px;
+    -moz-border-radius-topright: 0px;
+    border-top-right-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+    -moz-border-radius-bottomright: 0px;
+    border-bottom-right-radius: 0px;
+    -webkit-border-bottom-left-radius: 0px;
+    -moz-border-radius-bottomleft: 0px;
+    border-bottom-left-radius: 0px;
+    text-indent: 0;
+    border: 1px solid #225718;
+    display: inline-block;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: 15px;
+    font-weight: normal;
+    font-style: italic;
+    height: 50px;
+    line-height: 30px;
+    width: 500px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+}
+
 }
 .soButton:hover {
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #4197ee
