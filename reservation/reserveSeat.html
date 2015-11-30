@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compose</title>
+<link href="../css/style.css" rel="stylesheet">
+<script type="text/javascript"
+	src="../javascript/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/util.js"></script>
+<script src="bundle.js"></script>
+<script type="text/javascript">
+
+
+  	var initialized = 0;
+	console.clear();
+	function reserveSeat(){
+		$('#resultDivContainer').empty();
+	  	var e = document.getElementById("seat");
+		  var id = e.options[e.selectedIndex].value;
+
+		  e = document.getElementById("time");
+		  var time = parseInt(e.options[e.selectedIndex].value);
+		  time = time + new Date().getTime();
+		  e = document.getElementById("status");
+		  var status = e.options[e.selectedIndex].value;
+
+		  console.log('expiration of reservation: '+time+" as tring: "+new Date(time).toString());
+		  var map = {"0": {"row": "0", "id": "14485453949885e57b0665c064f0db737a8afafe64bd4", "col": "0"}, "1": {"row": "1", "id": "14485454102888f0e80481e194ae69dcafe9986ab1082", "col": "0"}, "2": {"row": "2", "id": "1448545425666cbbe1adfc4ff41bda55b387427073ea4", "col": "0"}, "3": {"row": "3", "id": "144854544113853157ceffd4448b7a912c1c2aacf4df0", "col": "0"}, "4": {"row": "4", "id": "14485454564952dc9518fc7f345c899c6f6783b51b428", "col": "0"}, "5": {"row": "5", "id": "14485454722010f5eebd40a324b42bdc0d8c119883460", "col": "0"}, "6": {"row": "6", "id": "14485454876076b3499a1782548759316e69337c71c06", "col": "0"}, "7": {"row": "7", "id": "14485455032680fcb549a56d3489ca422956da40dbfac", "col": "0"}, "8": {"row": "8", "id": "144854551859490c752d50ca54f5b9ab3b63a41cfc876", "col": "0"}, "9": {"row": "9", "id": "1448545534156d01d8981955b40d887355a52193f435c", "col": "0"}, "10": {"row": "10", "id": "14485455503918a726cec771c4b53afa5da61ea89988a", "col": "0"}, "11": {"row": "11", "id": "1448545565801d7e70122fb9f46daac3f60b9e8449db2", "col": "0"}, "12": {"row": "12", "id": "14485455813169745a0315cda4585bdacaf29f55c06bc", "col": "0"}, "13": {"row": "13", "id": "14485455969761d1386e52a9a4d65b2cd5597917f54c0", "col": "0"}, "18": {"row": "0", "id": "14485456122920f4e9738b5dc47a2a1eed33b52c8496a", "col": "1"}, "19": {"row": "1", "id": "144854562768272b2b9251ed846819ca3732baa9f2506", "col": "1"}, "20": {"row": "2", "id": "1448545643015cf841d92fdba468091ffc5410bc82222", "col": "1"}, "21": {"row": "3", "id": "1448545658356f67c65511abd4cb49ad56a71041531d6", "col": "1"}, "22": {"row": "4", "id": "14485456737169ea1e57dc3af4521bb6b0ecabfed1f65", "col": "1"}, "23": {"row": "5", "id": "14485456890419ed977aa0fa5486594cd5c019d76de20", "col": "1"}, "24": {"row": "6", "id": "14485457043722a70c097981d4ab4ad2d80c24fdc541c", "col": "1"}, "25": {"row": "7", "id": "1448545719695394520594f894f6186278490fc7b2906", "col": "1"}, "26": {"row": "8", "id": "1448545735122f3470bb2bc2a442680b9b8172d58e810", "col": "1"}, "27": {"row": "9", "id": "14485457504237ff6e0b62d93464195346cd5d28473be", "col": "1"}, "28": {"row": "10", "id": "1448545765795dec5373a803449f9852bc9d00c452a47", "col": "1"}, "29": {"row": "11", "id": "144854578113811be35227cf049f5bae3215ab0ca7d6a", "col": "1"}, "30": {"row": "12", "id": "1448545796480ac11d9ae60b74899be428c871c17173b", "col": "1"}, "31": {"row": "13", "id": "1448545811801638285585e654107b9afa94e0d3e4ba6", "col": "1"}};
+		 var sharedSoid = map[id].id;
+		 var username = "";
+		 if(initialized == 0){
+  	         	getKey(	function(error, key){
+				if(error != null){
+					alert('cannot get key material from IDM');
+				}
+				else{
+					initialized=1;
+					reserveSeatServioticy(key, sharedSoid, status, time);
+	
+				}
+			});
+
+		 }
+		 else{
+			reserveSeatServioticy(null, sharedSoid, status, time);
+		 }
+	}
+
+	// Get key for encryption from IDM //
+	function getKey(callback){
+
+		
+		  $.ajax({
+        	    url: idmIp + ':' + idmPort + '/idm/key/',
+        	    type: 'GET',
+	            contentType: "application/json; charset=utf-8",
+        	    crossDomain: true, 
+        	    async:false,
+		    headers: {'Authorization':  'bearer '+ parent.token},
+        	    success: function (result) {
+			if (result != null){
+				console.log('got key:'+JSON.stringify(result));
+				callback(null, result);
+			} else { callback({"Error" : "not able to get key from IDM"},null);}
+        	    },
+        	    error: function (xhr, ajaxOptions, thrownError) {
+        	        resultDiv.html("Error: " + xhr.status + " " + thrownError);
+			   callback({"Error" : "not able to get key from IDM"},null);
+        	    }
+	        });
+		
+	}
+
+	function reserveSeatServioticy(key, sharedSoid, status, time){
+	       if(key){
+			console.log('setting key with:'+key.rootSecret);
+			window.setKey(key.rootSecret);
+		}
+    	// Get user ID
+	getUserID(function(err, ownerId, username){
+		if (err != null){
+			alert("Could not get OwnerId");
+			return null;
+		}
+		var owner = ownerId;
+		username = username;
+		// Get SOs
+		getSO(function(err, entities){
+			if (err != null){
+				alert("Could not get soList");
+				return null;
+			}
+			var soList = entities.entities;
+			//alert("SO list: " + soList);
+			var listLength = soList.length;
+			/*if(listLength>1){
+				alert('user has too many service objects for user info');
+				return null;
+			}*/
+			for (var i = 0; i < listLength; i++){
+				var soId = soList[i].id;
+				getSOData(soId,  function(error, so){
+					if (err != null){
+						alert("Could not find data for So with id "+soId);
+						return null;
+					}
+					pushUpdateforSo(so.id, so.api_token,username, status, function(error, result){
+						var channels ={
+     							"soid":{
+						                "current-value": so.id
+							}, 
+							"end-reservation": {
+				        		      "current-value": time
+						        }
+						}
+						encryptAndSend(channels,sharedSoid);
+					});
+				}); 
+				
+			}
+		});
+	});
+    };
+
+    
+
+    // update service object with token
+	
+    function pushUpdateforSo(soId, api_token, username, status, callback){
+ 	
+	var su = { "channels": {
+		     "status": {
+		      "current-value": status
+		      },
+		     "username": {
+		      "current-value": username
+		      }
+
+		    },
+		     "lastUpdate": new Date().getTime()
+	}
+
+	console.log("id:"+soId+" token: "+api_token+" status: "+status+" username: "+username);
+	$.ajax({
+	    url: servioticyIp + ":" + servioticyPort+"/"+soId+"/streams/info/",
+            type: 'PUT',
+            data: JSON.stringify(su),
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            crossDomain: true,
+            async:false,
+            headers: {'Authorization': api_token},
+
+            success: function (result) {
+		console.log("update performed:"+JSON.stringify(result));
+		callback(null, result);
+                /*var table = display_json(result);
+                $('#resultDivContainer').empty();
+                $('#resultDivContainer').append(table);*/
+            },
+
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+	
+
+    }
+    // ------------------ get my list of SOs ------------------------------ //
+    function getSO(callback) {
+
+        var resultDiv = $("#resultDivContainer");
+	
+        $.ajax({
+            url: idmIp + ':' + idmPort + '/idm/user/'+parent.user_id+'/serviceobject/',
+            type: 'GET',
+            crossDomain: true, 
+            async:false,
+		headers: {'Authorization':  'bearer '+ parent.token},
+            success: function (result) {
+		if (result != null){
+			callback(null, result);
+		} else { callback({"Error" : "No SOs found"},null);}
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+		   callback({"Error" : "No SO ID"},null);
+            }
+        });
+    };
+
+    // ------------------ get TOKEN from IDM to push to my own SO ------------------------------ //
+    function getSOData(id, callback) {
+
+        var resultDiv = $("#resultDivContainer");
+	
+        $.ajax({
+                    url: idmIp + ':' + idmPort + '/idm/serviceobject/'+id+'/',
+            type: 'GET',
+            crossDomain: true, 
+            async:false,
+		headers: {'Authorization':  'bearer '+ parent.token},
+            success: function (result) {
+		if (result != null){
+			callback(null, result);
+		} else { callback({"Error" : "No SOs found"},null);}
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+		   callback({"Error" : "No SO ID"},null);
+            }
+        });
+    };
+    
+    // ------------------ get username and id from IDM ------------------------------ //
+	function getUserID(callback) {
+	
+        var resultDiv = $("#resultDivContainer");
+
+	$.ajax({
+        	url: idmIp + ":"  + idmPort + '/idm/user/info/',
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            crossDomain: true, 
+            async:false,
+		headers: {'Authorization':  "Bearer" +  parent.token},
+            success: function (result) {
+		if (result.id != null){
+			callback(null, result.id, result.username);
+		}else {callback({"Error" : "No UserID"},null);}
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                resultDiv.html("Error: " + xhr.status + " " + thrownError);
+		   callback({"Error" : "No UserID"},null);
+            }
+        });
+    };
+
+	
+
+
+function encryptAndSend(message,soid){
+	 console.log('attempting to encrypt now..');
+	 for(var i =0; 1>i; i++){
+  		var result =window.encrypt(message);
+	  	console.log(result);
+		send(soid, result);
+	 }
+}
+
+
+
+function send(soid, result){
+
+$.ajax({
+            url:  servioticyIp + ":" + servioticyPort+"/"+soid+"/streams/shared",
+            type: 'PUT',
+            data: result,
+            contentType: "application/json",
+            dataType: 'json',
+            crossDomain: true,
+            async:false,
+            headers: { "Authorization": "SHA-256:LBS:8"},
+            //headers: { "Authorization": "CjRCjjbGkMM03ALRxNJV5S194jsqQVyKDV5zmd"},
+            success: function (result) {
+                console.log('response from servioticy on info stream:'+JSON.stringify(result));
+ 		var table = $('<table></table>').addClass('jsonTable');
+		var row = $('<tr></tr>').addClass('row').text( 'Seat has been reserved!');
+		table.append(row);
+		  $('#resultDivContainer').empty();
+                  $('#resultDivContainer').append(table);          
+	    },
+
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Error: " + xhr.status + " " + xhr.responseText+ " "+thrownError);
+            }
+        });
+
+}
+	
+
+</script>
+</head>
+<body>
+
+	<h2 align="center" style="color: DarkBlue;">Reserve a  seat</h2>
+
+	<form method="get" action="">
+		        
+		<table align="center">
+
+		
+
+
+			<tr>
+				<td>Seat:</td>
+				<td>
+				<select id="seat">
+					  <option value="0">0</option>
+					  <option value="1">1</option>
+					  <option value="2">2</option>
+					  <option value="3">3</option>
+					  <option value="4">4</option>
+					  <option value="5">5</option>
+					  <option value="6">6</option>
+					  <option value="7">7</option>
+					  <option value="8">8</option>
+					  <option value="9">9</option>
+					  <option value="10">10</option>
+					  <option value="11">11</option>
+					  <option value="12">12</option>
+					  <option value="13">13</option>
+					  <option value="14">14</option>
+					  <option value="15">15</option>
+					  <option value="16">16</option>
+					  <option value="17">17</option>
+					  <option value="18">18</option>
+					  <option value="19">19</option>
+					  <option value="20">20</option>
+					  <option value="21">21</option>
+					  <option value="22">22</option>
+					  <option value="23">23</option>
+					  <option value="24">24</option>
+					  <option value="25">25</option>
+					  <option value="26">26</option>
+					  <option value="27">27</option>
+					  <option value="28">28</option>
+				</select>
+		                </td>
+			</tr>
+
+
+			<tr>
+				<td>Seat:</td>
+				<td>
+				<select id="time">
+					  <option value="900000">15 min</option>
+					  <option value="1800000">30 min</option>
+					  
+				</select>
+		                </td>
+			</tr>
+			<tr>
+				<td>Status:</td>
+				<td>
+				<select id="status">
+					  <option value="picking up a book">picking up a book</option>
+					  <option value="coffe break">coffe break</option>
+					  <option value="short nap">short nap</option>					  
+				</select>
+		                </td>
+			</tr>
+			<tr>
+				<td><br>&nbsp;</td>
+				<td><a class="idmButton" onclick="reserveSeat()">Reserve</a></td>
+			</tr>
+
+		</table>
+		    
+	</form>
+
+	<div id="resultDivContainer" align="center"></div>
+</body>
+</html>

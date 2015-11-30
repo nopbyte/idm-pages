@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compose</title>
+<link href="../css/style.css" rel="stylesheet">
+<script type="text/javascript"
+	src="../javascript/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/util.js"></script>
+<script type="text/javascript">
+  	
+        function getStatus()
+         {
+            if ("WebSocket" in window)
+            {
+
+               
+               // Let us open a web socket
+               var ws = new WebSocket(resrevedForUrl);
+				
+               ws.onopen = function()
+               {
+
+		  var e = document.getElementById("seat");
+		  var id = e.options[e.selectedIndex].value;
+		  console.log('seat id:'+id);
+                  // Web Socket is connected, send data using send()
+                  ws.send('{"id":'+id+', "token":"'+parent.token+'"}');
+                  console.log("Message is sent...");
+               };
+				
+               ws.onmessage = function (evt) 
+               { 
+                  var received_msg = JSON.parse(evt.data);
+                  console.log("Message is received..."+evt.data);
+ 		  var table = $('<table></table>').addClass('jsonTable');
+		  var row = $('<tr></tr>').addClass('row').text( 'end-of-reservation : '+new Date(received_msg['end-reservation']).toString());
+		  table.append(row);
+		  row = $('<tr></tr>').addClass('row').text( 'username : '+received_msg.username);
+		  table.append(row);
+		  row = $('<tr></tr>').addClass('row').text( 'status : '+received_msg.status);
+		  table.append(row);
+                  $('#resultDivContainer').empty();
+                  $('#resultDivContainer').append(table);
+               };
+				
+               ws.onclose = function()
+               { 
+                  // websocket is closed.
+                  alert("Connection is closed..."); 
+               };
+            }
+            
+            else
+            {
+               // The browser doesn't support WebSocket
+               alert("WebSocket NOT supported by your Browser!");
+            }
+         }
+
+</script>
+</head>
+<body>
+
+	<h2 align="center" style="color: DarkBlue;">Check seat status</h2>
+
+	<form method="get" action="">
+		        
+		<table align="center">
+
+		
+
+
+			<tr>
+				<td>Seat:</td>
+				<td>
+				<select id="seat">
+					  <option value="0">0</option>
+					  <option value="1">1</option>
+					  <option value="2">2</option>
+					  <option value="3">3</option>
+					  <option value="4">4</option>
+					  <option value="5">5</option>
+					  <option value="6">6</option>
+					  <option value="7">7</option>
+					  <option value="8">8</option>
+					  <option value="9">9</option>
+					  <option value="10">10</option>
+					  <option value="11">11</option>
+					  <option value="12">12</option>
+					  <option value="13">13</option>
+					  <option value="14">14</option>
+					  <option value="15">15</option>
+					  <option value="16">16</option>
+					  <option value="17">17</option>
+					  <option value="18">18</option>
+					  <option value="19">19</option>
+					  <option value="20">20</option>
+					  <option value="21">21</option>
+					  <option value="22">22</option>
+					  <option value="23">23</option>
+					  <option value="24">24</option>
+					  <option value="25">25</option>
+					  <option value="26">26</option>
+					  <option value="27">27</option>
+					  <option value="28">28</option>
+				</select>
+		                </td>
+			</tr>
+
+
+			<tr>
+				<td><br>&nbsp;</td>
+				<td><a class="idmButton" onclick="getStatus()">Query Status</a></td>
+			</tr>
+
+		</table>
+		    
+	</form>
+
+	<div id="resultDivContainer" align="center"></div>
+</body>
+</html>
+

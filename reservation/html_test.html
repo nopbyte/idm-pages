@@ -1,0 +1,87 @@
+<!--
+
+TESTing...
+
+curl -XPOST -H "content-type: application/json" -d '{"info":{"id":"1"},"rootSecret":"8527e4a2f9a4e6ebd2b0a33299bed57c5959b44cc95feadb405d2bb7c472acf54b9483dedd46fb2fac5e98ef04156b98cdd29c08ff7da9cde074f3f48dafdf9d3c2260d2c9c50292d13d1f8380c095e434606f4a679028e81525170a4966b42a1ff9586aa11eac289256e941486e68750f7c171f18e920f677a85022b3298e0acd17d625cfd9956b70b0ae13b92c299e3255d76aed19aa6d157875ceeb5b765db4a25c08c077fa3ea284135bd7eb4627438542ea05a9f058ed256ca6f536193b5582ee9166edcdba94401101c78d4ed03f1769ea43d55e66750713f13b652b9bc7514f8fb4305ea462588d0253874128f6ddec2fce6a693615b061b1072abaee","oneTimePad":"2fa08b11f0372d8e8830444382018e199bed31c9b0ec","currentOtp":"ee8527e4a2f9a4e6ebd2b0a33299bed57c5959b44cc95feadb405d2bb7c472acf54b9483dedd46fb2fac5e98ef04156b98cdd29c08ff7da9cde074f3f48dafdf9d3c2260d2c9c50292d13d1f8380c095e434606f4a679028e81525170a4966b42a1ff9586aa11eac289256e941486e68750f7c171f18e920f677a85022b3298e0acd17d625cfd9956b70b0ae13b92c299e3255d76aed19aa6d157875ceeb5b765db4a25c08c077fa3ea284135bd7eb4627438542ea05a9f058ed256ca6f536193b5582ee9166edcdba94401101c78d4ed03f1769ea43d55e66750713f13b652b9bc7514f8fb4305ea462588d0253874128f6ddec2fce6a693615b061b1072aba","index":1,"depth":0,"maxWidth":16,"maxHeight":-1,"hashAlgorithm":"SHA-256","secretDerivationType":"RightBitShiftDerivator","factorOfSecretDerivation":4}'  http://servioticy.com:9090/private/security/info/da7e30c677d9ad5eb229
+
+-->
+
+<html>
+<head>
+<script src="bundle.js"></script>
+<link href="./css/style.css" rel="stylesheet">
+<script type="text/javascript"
+        src="./javascript/jquery.min.js"></script>
+<script type="text/javascript" src="./javascript/util.js"></script>
+<script>
+
+var token_resp = {
+  "info": {
+    "id": "1"
+  },
+  "rootSecret": "8527e4a2f9a4e6ebd2b0a33299bed57c5959b44cc95feadb405d2bb7c472acf54b9483dedd46fb2fac5e98ef04156b98cdd29c08ff7da9cde074f3f48dafdf9d3c2260d2c9c50292d13d1f8380c095e434606f4a679028e81525170a4966b42a1ff9586aa11eac289256e941486e68750f7c171f18e920f677a85022b3298e0acd17d625cfd9956b70b0ae13b92c299e3255d76aed19aa6d157875ceeb5b765db4a25c08c077fa3ea284135bd7eb4627438542ea05a9f058ed256ca6f536193b5582ee9166edcdba94401101c78d4ed03f1769ea43d55e66750713f13b652b9bc7514f8fb4305ea462588d0253874128f6ddec2fce6a693615b061b1072abaee",
+  "oneTimePad": "2fa08b11f0372d8e8830444382018e199bed31c9b0ec",
+  "currentOtp": "ee8527e4a2f9a4e6ebd2b0a33299bed57c5959b44cc95feadb405d2bb7c472acf54b9483dedd46fb2fac5e98ef04156b98cdd29c08ff7da9cde074f3f48dafdf9d3c2260d2c9c50292d13d1f8380c095e434606f4a679028e81525170a4966b42a1ff9586aa11eac289256e941486e68750f7c171f18e920f677a85022b3298e0acd17d625cfd9956b70b0ae13b92c299e3255d76aed19aa6d157875ceeb5b765db4a25c08c077fa3ea284135bd7eb4627438542ea05a9f058ed256ca6f536193b5582ee9166edcdba94401101c78d4ed03f1769ea43d55e66750713f13b652b9bc7514f8fb4305ea462588d0253874128f6ddec2fce6a693615b061b1072aba",
+  "index": 1,
+  "depth": 0,
+  "maxWidth": 16,
+  "maxHeight": -1,
+  "hashAlgorithm": "SHA-256",
+  "secretDerivationType": "RightBitShiftDerivator",
+  "factorOfSecretDerivation": 4
+};
+
+
+function encryptAndSend(message,soid){
+ console.log('attempting to encrypt now..');
+ for(var i =0; 1>i; i++){
+  var result =window.encrypt(message);
+  console.log(result);
+  //send(soid, result);
+
+ }
+}
+
+console.log('setting key to :'+ token_resp.currentOtp);
+window.setKey(token_resp.rootSecret);
+var soid = '14467168274284699bf60ec004195be4dece827d43d7f';
+var token = 'CjRCjjbGkMM03ALRxNJV5S194jsqQVyKDV5zmd';
+var su ={
+     "soid": {
+                "current-value": '123'
+      }, 
+      "end-reservation": {
+              "current-value": 123
+       }
+}
+
+encryptAndSend(su,soid);
+
+
+
+function send(soid, result){
+
+$.ajax({
+            url: "http://api.servioticy.com:9090/"+soid+"/streams/shared",
+            type: 'PUT',
+            data: result,
+            contentType: "application/json",
+            dataType: 'json',
+            crossDomain: true,
+            async:false,
+            headers: { "Authorization": "SHA-256:LBS:8"},
+            //headers: { "Authorization": "CjRCjjbGkMM03ALRxNJV5S194jsqQVyKDV5zmd"},
+            success: function (result) {
+                alert(JSON.stringify(result));
+            },
+
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Error: " + xhr.status + " " + xhr.responseText+ " "+thrownError);
+            }
+        });
+
+}
+
+</script>
+</head>
+</html>
